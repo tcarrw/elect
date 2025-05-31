@@ -594,197 +594,8 @@
 
     <div class="tooltip" id="tooltip"></div>
 
-    <script>
-        // Real candidate data with time series
-        const candidateData = {
-            "Andrew Cuomo": {
-                photo: "AC",
-                totalRaised: 8200000,
-                smallDonors: 62,
-                publicFunds: 1500000,
-                publicFundsWithheld: 1300000,
-                totalSpent: 5800000,
-                party: "Democratic",
-                status: "Frontrunner - PAC issues",
-                polling: 35,
-                trend: "problematic",
-                issues: "PAC coordination",
-                timelineData: [
-                    {month: "Jan", raised: 0, spent: 0},
-                    {month: "Feb", raised: 0, spent: 0},
-                    {month: "Mar", raised: 1500000, spent: 800000},
-                    {month: "Apr", raised: 3200000, spent: 2100000},
-                    {month: "May", raised: 3500000, spent: 2900000}
-                ],
-                contributions: [
-                    {category: "Small Donors", amount: 5084000, count: 7800},
-                    {category: "Large Donors", amount: 3116000, count: 520},
-                    {category: "Public Matching", amount: 1500000, count: 1}
-                ],
-                spending: [
-                    {category: "Media & Advertising", amount: 2900000},
-                    {category: "Staff & Consultants", amount: 1700000},
-                    {category: "Events & Outreach", amount: 800000},
-                    {category: "Digital & Technology", amount: 400000}
-                ]
-            },
-            "Zohran Mamdani": {
-                photo: "ZM",
-                totalRaised: 8300000,
-                smallDonors: 82,
-                publicFunds: 3800000,
-                publicFundsWithheld: 0,
-                totalSpent: 4200000,
-                party: "Democratic",
-                status: "Maxed out - Surging",
-                polling: 23,
-                trend: "trending",
-                issues: null,
-                timelineData: [
-                    {month: "Jan", raised: 800000, spent: 200000},
-                    {month: "Feb", raised: 1600000, spent: 600000},
-                    {month: "Mar", raised: 2400000, spent: 1200000},
-                    {month: "Apr", raised: 1800000, spent: 1400000},
-                    {month: "May", raised: 1700000, spent: 800000}
-                ],
-                contributions: [
-                    {category: "Small Donors", amount: 6806000, count: 16000},
-                    {category: "Large Donors", amount: 1494000, count: 280},
-                    {category: "Public Matching", amount: 3800000, count: 1}
-                ],
-                spending: [
-                    {category: "Grassroots Organizing", amount: 1800000},
-                    {category: "Digital & Technology", amount: 1000000},
-                    {category: "Media & Advertising", amount: 900000},
-                    {category: "Events & Outreach", amount: 500000}
-                ]
-            },
-            "Brad Lander": {
-                photo: "BL",
-                totalRaised: 5900000,
-                smallDonors: 74,
-                publicFunds: 2200000,
-                publicFundsWithheld: 0,
-                totalSpent: 3800000,
-                party: "Democratic",
-                status: "Comptroller",
-                polling: 11,
-                trend: "stable",
-                issues: null,
-                timelineData: [
-                    {month: "Jan", raised: 1200000, spent: 400000},
-                    {month: "Feb", raised: 1400000, spent: 800000},
-                    {month: "Mar", raised: 1300000, spent: 1000000},
-                    {month: "Apr", raised: 1000000, spent: 900000},
-                    {month: "May", raised: 1000000, spent: 700000}
-                ],
-                contributions: [
-                    {category: "Small Donors", amount: 4366000, count: 6200},
-                    {category: "Large Donors", amount: 1534000, count: 380},
-                    {category: "Public Matching", amount: 2200000, count: 1}
-                ],
-                spending: [
-                    {category: "Policy Research", amount: 1200000},
-                    {category: "Media & Advertising", amount: 1100000},
-                    {category: "Staff & Consultants", amount: 900000},
-                    {category: "Digital & Technology", amount: 600000}
-                ]
-            },
-            "Adrienne Adams": {
-                photo: "AA",
-                totalRaised: 2700000,
-                smallDonors: 71,
-                publicFunds: 2000000,
-                publicFundsWithheld: 0,
-                totalSpent: 1600000,
-                party: "Democratic",
-                status: "Just unlocked funds",
-                polling: 8,
-                trend: "trending",
-                issues: null,
-                timelineData: [
-                    {month: "Jan", raised: 0, spent: 0},
-                    {month: "Feb", raised: 300000, spent: 100000},
-                    {month: "Mar", raised: 800000, spent: 400000},
-                    {month: "Apr", raised: 900000, spent: 600000},
-                    {month: "May", raised: 700000, spent: 500000}
-                ],
-                contributions: [
-                    {category: "Small Donors", amount: 1917000, count: 3200},
-                    {category: "Large Donors", amount: 783000, count: 180},
-                    {category: "Public Matching", amount: 2000000, count: 1}
-                ],
-                spending: [
-                    {category: "Community Outreach", amount: 600000},
-                    {category: "Media & Advertising", amount: 500000},
-                    {category: "Staff & Consultants", amount: 350000},
-                    {category: "Events & Outreach", amount: 150000}
-                ]
-            },
-            "Scott Stringer": {
-                photo: "SS",
-                totalRaised: 4500000,
-                smallDonors: 67,
-                publicFunds: 1800000,
-                publicFundsWithheld: 0,
-                totalSpent: 2900000,
-                party: "Democratic",
-                status: "Former Comptroller",
-                polling: 9,
-                trend: "stable",
-                issues: null,
-                timelineData: [
-                    {month: "Jan", raised: 900000, spent: 300000},
-                    {month: "Feb", raised: 1000000, spent: 600000},
-                    {month: "Mar", raised: 1100000, spent: 800000},
-                    {month: "Apr", raised: 800000, spent: 700000},
-                    {month: "May", raised: 700000, spent: 500000}
-                ],
-                contributions: [
-                    {category: "Small Donors", amount: 3015000, count: 4100},
-                    {category: "Large Donors", amount: 1485000, count: 320},
-                    {category: "Public Matching", amount: 1800000, count: 1}
-                ],
-                spending: [
-                    {category: "Media & Advertising", amount: 1300000},
-                    {category: "Staff & Consultants", amount: 900000},
-                    {category: "Events & Outreach", amount: 400000},
-                    {category: "Digital & Technology", amount: 300000}
-                ]
-            },
-            "Eric Adams": {
-                photo: "EA",
-                totalRaised: 1900000,
-                smallDonors: 43,
-                publicFunds: 0,
-                publicFundsWithheld: 3400000,
-                totalSpent: 1400000,
-                party: "Independent",
-                status: "Incumbent - Denied funds",
-                polling: 10,
-                trend: "problematic",
-                issues: "Federal charges",
-                timelineData: [
-                    {month: "Jan", raised: 400000, spent: 200000},
-                    {month: "Feb", raised: 300000, spent: 300000},
-                    {month: "Mar", raised: 500000, spent: 400000},
-                    {month: "Apr", raised: 400000, spent: 300000},
-                    {month: "May", raised: 300000, spent: 200000}
-                ],
-                contributions: [
-                    {category: "Small Donors", amount: 817000, count: 1100},
-                    {category: "Large Donors", amount: 1083000, count: 190},
-                    {category: "Public Matching", amount: 0, count: 0}
-                ],
-                spending: [
-                    {category: "Legal Fees", amount: 700000},
-                    {category: "Media & Advertising", amount: 350000},
-                    {category: "Staff & Consultants", amount: 250000},
-                    {category: "Events & Outreach", amount: 100000}
-                ]
-            }
-        };
-
+   <script>
+        // Color definitions (can remain as is)
         const colors = {
             "Small Donors": "#2e8b57",
             "Large Donors": "#ffd700",
@@ -821,12 +632,11 @@
             return '$' + amount.toLocaleString();
         }
 
-        function createCandidateWidget(candidate, data) {
+        function createCandidateWidget(candidate, data) { // 'data' here is candidateData[candidateName]
             const container = d3.select("#candidates-container");
             const widget = container.append("div")
                 .attr("class", `candidate-widget ${data.trend || ''}`);
 
-            // Header with photo and basic info
             const header = widget.append("div")
                 .attr("class", "candidate-header");
 
@@ -839,7 +649,7 @@
 
             info.append("div")
                 .attr("class", "candidate-name")
-                .text(candidate);
+                .text(candidate); // Candidate's name
 
             info.append("div")
                 .attr("class", "candidate-party")
@@ -866,7 +676,6 @@
                 .attr("class", "candidate-status")
                 .text(data.status);
 
-            // Mobile toggle button
             const mobileToggle = widget.append("button")
                 .attr("class", "mobile-toggle")
                 .text("📊 Show Detailed Stats")
@@ -877,11 +686,9 @@
                     d3.select(this).text(isActive ? "📊 Show Detailed Stats" : "📊 Hide Detailed Stats");
                 });
 
-            // Main content area
             const content = widget.append("div")
                 .attr("class", "widget-content");
 
-            // Stats section
             const statsSection = content.append("div")
                 .attr("class", "stats-section");
 
@@ -903,21 +710,15 @@
                     .text(stat.label);
             });
 
-            // Charts section
             const chartSection = content.append("div")
                 .attr("class", "chart-section");
 
-            // Timeline chart
-            createTimelineChart(chartSection, data, candidate);
-            
-            // Spending breakdown chart
-            createSpendingChart(chartSection, data, candidate);
+            createTimelineChart(chartSection, data, candidate); // Pass specific candidate data and name
+            createSpendingChart(chartSection, data, candidate); // Pass specific candidate data and name
 
-            // Mobile detailed stats
             const mobileStats = widget.append("div")
                 .attr("class", "mobile-stats");
 
-            // Funding breakdown for mobile
             mobileStats.append("h4")
                 .style("color", "#ffd700")
                 .style("margin-bottom", "0.5rem")
@@ -929,21 +730,19 @@
                     .html(`<strong>${contrib.category}:</strong> ${formatCurrency(contrib.amount)} (${contrib.count.toLocaleString()} donors)`);
             });
 
-            // Spending breakdown for mobile
             mobileStats.append("h4")
                 .style("color", "#ffd700")
                 .style("margin", "1rem 0 0.5rem 0")
                 .text("💸 Campaign Spending:");
 
             data.spending.forEach(spend => {
-                const percentage = ((spend.amount / data.totalSpent) * 100).toFixed(1);
+                const percentage = (data.totalSpent > 0 ? (spend.amount / data.totalSpent) * 100 : 0).toFixed(1);
                 mobileStats.append("div")
                     .attr("class", "mobile-detail")
                     .html(`<strong>${spend.category}:</strong> ${formatCurrency(spend.amount)} (${percentage}%)`);
             });
-
-            // Efficiency metrics for mobile
-            const efficiency = data.totalSpent > 0 ? (data.polling / (data.totalSpent / 1000000)).toFixed(1) : 0;
+            
+            const efficiency = data.totalSpent > 0 ? (data.polling / (data.totalSpent / 1000000)).toFixed(1) : "0";
             const remaining = data.totalRaised - data.totalSpent;
             
             mobileStats.append("h4")
@@ -966,7 +765,6 @@
                     .html(`<strong>⚠️ Withheld by CFB:</strong> ${formatCurrency(data.publicFundsWithheld)}`);
             }
 
-            // Timeline data for mobile
             mobileStats.append("h4")
                 .style("color", "#ffd700")
                 .style("margin", "1rem 0 0.5rem 0")
@@ -978,7 +776,6 @@
                     .html(`<strong>${month.month}:</strong> Raised ${formatCurrency(month.raised)}, Spent ${formatCurrency(month.spent)}`);
             });
 
-            // Warning for issues
             if (data.issues || data.publicFundsWithheld > 0) {
                 widget.append("div")
                     .attr("class", "warning-text")
@@ -986,7 +783,7 @@
             }
         }
 
-        function createTimelineChart(container, data, candidate) {
+        function createTimelineChart(container, data, candidateName) { // 'data' is specific candidate's data
             const chartDiv = container.append("div")
                 .attr("class", "mini-chart");
 
@@ -995,12 +792,15 @@
                 .text("Funding Timeline");
 
             const margin = {top: 10, right: 10, bottom: 20, left: 30};
-            const width = 220 - margin.left - margin.right;
-            const height = 80 - margin.top - margin.bottom;
+            const width = 220 - margin.left - margin.right; // Ensure this fits or adjust
+            const height = 80 - margin.top - margin.bottom; // Ensure this fits
 
             const svg = chartDiv.append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom);
+                .attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+                .attr("preserveAspectRatio", "xMidYMid meet")
+                .style("width", "100%") // Make responsive
+                .style("max-width", `${width + margin.left + margin.right}px`); // Max width
+
 
             const g = svg.append("g")
                 .attr("transform", `translate(${margin.left},${margin.top})`);
@@ -1012,11 +812,11 @@
                 .domain(timelineData.map(d => d.month))
                 .padding(0.2);
 
+            const yMax = d3.max(timelineData, d => Math.max(d.raised, d.spent));
             const y = d3.scaleLinear()
                 .range([height, 0])
-                .domain([0, d3.max(timelineData, d => Math.max(d.raised, d.spent))]);
+                .domain([0, yMax === 0 ? 1 : yMax]); // Avoid domain of [0,0] if all values are 0
 
-            // Raised bars (background)
             g.selectAll(".raised-bar")
                 .data(timelineData)
                 .enter().append("rect")
@@ -1028,10 +828,9 @@
                 .attr("fill", "#48d1cc")
                 .attr("opacity", 0.7)
                 .on("click", function(event, d) {
-                    // Mobile click handler
                     if (window.innerWidth <= 768) {
                         showTooltip(event, `
-                            <strong>${candidate} - ${d.month}</strong><br>
+                            <strong>${candidateName} - ${d.month}</strong><br>
                             Raised: ${formatCurrency(d.raised)}<br>
                             Spent: ${formatCurrency(d.spent)}
                         `);
@@ -1039,7 +838,6 @@
                     }
                 });
 
-            // Spent bars (foreground)
             g.selectAll(".spent-bar")
                 .data(timelineData)
                 .enter().append("rect")
@@ -1051,10 +849,9 @@
                 .attr("fill", "#ffd700")
                 .attr("opacity", 0.8)
                 .on("click", function(event, d) {
-                    // Mobile click handler
                     if (window.innerWidth <= 768) {
                         showTooltip(event, `
-                            <strong>${candidate} - ${d.month}</strong><br>
+                            <strong>${candidateName} - ${d.month}</strong><br>
                             Raised: ${formatCurrency(d.raised)}<br>
                             Spent: ${formatCurrency(d.spent)}
                         `);
@@ -1062,7 +859,6 @@
                     }
                 });
 
-            // Axes
             g.append("g")
                 .attr("transform", `translate(0,${height})`)
                 .call(d3.axisBottom(x))
@@ -1072,12 +868,10 @@
 
             g.selectAll(".domain, .tick line").attr("stroke", "rgba(255,255,255,0.3)");
 
-            // Add mobile instructions
             chartDiv.append("div")
                 .attr("class", "touch-indicator")
                 .text("💡 Tap bars for details");
 
-            // Mobile chart info
             const mobileInfo = chartDiv.append("div")
                 .attr("class", "chart-mobile-info");
 
@@ -1091,7 +885,7 @@
                 .html("🟨 <strong>Gold bars:</strong> Monthly spending");
         }
 
-        function createSpendingChart(container, data, candidate) {
+        function createSpendingChart(container, data, candidateName) { // 'data' is specific candidate's data
             const chartDiv = container.append("div")
                 .attr("class", "mini-chart");
 
@@ -1099,27 +893,30 @@
                 .attr("class", "chart-title-mini")
                 .text("Spending Breakdown");
 
-            const width = 180;
-            const height = 80;
-            const radius = 35;
+            const baseWidth = 180; // Base width for calculation
+            const baseHeight = 80; // Base height for calculation
+            const radius = Math.min(baseWidth / 2, baseHeight / 2) * 0.8; // Adjust radius dynamically
 
             const svg = chartDiv.append("svg")
-                .attr("width", width)
-                .attr("height", height);
+                .attr("viewBox", `0 0 ${baseWidth} ${baseHeight}`) // Use viewBox for responsiveness
+                .attr("preserveAspectRatio", "xMidYMid meet")
+                .style("width", "100%") // Make responsive
+                .style("max-width", `${baseWidth}px`); // Set a max width
+
 
             const g = svg.append("g")
-                .attr("transform", `translate(${width/2},${height/2})`);
+                .attr("transform", `translate(${baseWidth/2},${baseHeight/2})`);
 
             const pie = d3.pie()
                 .value(d => d.amount)
                 .sort(null);
 
             const arc = d3.arc()
-                .innerRadius(radius * 0.6)
+                .innerRadius(radius * 0.5) // Adjusted inner radius
                 .outerRadius(radius);
 
             const arcs = g.selectAll(".arc")
-                .data(pie(data.spending))
+                .data(pie(data.spending.filter(d => d.amount > 0))) // Filter out 0 amount slices for cleaner pie
                 .enter().append("g")
                 .attr("class", "arc");
 
@@ -1128,32 +925,30 @@
                 .attr("fill", d => colors[d.data.category] || '#999')
                 .style("opacity", 0.8)
                 .style("cursor", "pointer")
-                .on("mouseover", (event, d) => {
+                .on("mouseover", (event, d_arc) => { // d_arc is the arc datum
                     showTooltip(event, `
-                        <strong>${candidate}</strong><br>
-                        ${d.data.category}: ${formatCurrency(d.data.amount)}<br>
-                        ${((d.data.amount / data.totalSpent) * 100).toFixed(1)}% of spending
+                        <strong>${candidateName}</strong><br>
+                        ${d_arc.data.category}: ${formatCurrency(d_arc.data.amount)}<br>
+                        ${(data.totalSpent > 0 ? (d_arc.data.amount / data.totalSpent) * 100 : 0).toFixed(1)}% of spending
                     `);
                 })
                 .on("mouseout", hideTooltip)
-                .on("click", function(event, d) {
-                    // Mobile click handler
+                .on("click", function(event, d_arc) {
                     if (window.innerWidth <= 768) {
                         showTooltip(event, `
-                            <strong>${candidate}</strong><br>
-                            ${d.data.category}: ${formatCurrency(d.data.amount)}<br>
-                            ${((d.data.amount / data.totalSpent) * 100).toFixed(1)}% of spending
+                            <strong>${candidateName}</strong><br>
+                            ${d_arc.data.category}: ${formatCurrency(d_arc.data.amount)}<br>
+                            ${(data.totalSpent > 0 ? (d_arc.data.amount / data.totalSpent) * 100 : 0).toFixed(1)}% of spending
                         `);
                         setTimeout(hideTooltip, 3000);
                     }
                 });
-
-            // Center text showing remaining funds
+            
             const remaining = data.totalRaised - data.totalSpent;
             g.append("text")
                 .attr("text-anchor", "middle")
                 .attr("dy", "-0.2em")
-                .style("font-size", "10px")
+                .style("font-size", "10px") // Relative to viewBox
                 .style("fill", "#ffd700")
                 .style("font-weight", "bold")
                 .text(formatCurrency(remaining));
@@ -1161,16 +956,14 @@
             g.append("text")
                 .attr("text-anchor", "middle")
                 .attr("dy", "0.8em")
-                .style("font-size", "8px")
+                .style("font-size", "8px") // Relative to viewBox
                 .style("fill", "white")
                 .text("remaining");
 
-            // Add mobile instructions
             chartDiv.append("div")
                 .attr("class", "touch-indicator")
                 .text("💡 Tap slices for details");
-
-            // Mobile spending legend
+            
             const mobileInfo = chartDiv.append("div")
                 .attr("class", "chart-mobile-info");
 
@@ -1181,29 +974,37 @@
                 .text("Spending Categories:");
 
             data.spending.forEach(spend => {
-                const percentage = ((spend.amount / data.totalSpent) * 100).toFixed(0);
-                mobileInfo.append("div")
-                    .style("font-size", "0.75rem")
-                    .style("margin", "0.2rem 0")
-                    .style("display", "flex")
-                    .style("align-items", "center")
-                    .style("gap", "0.3rem")
-                    .html(`
-                        <div style="width: 12px; height: 12px; background: ${colors[spend.category]}; border-radius: 2px; flex-shrink: 0;"></div>
-                        <span>${spend.category}: ${percentage}%</span>
-                    `);
+                if (spend.amount > 0) { // Only show legend for items in the pie
+                    const percentage = (data.totalSpent > 0 ? (spend.amount / data.totalSpent) * 100 : 0).toFixed(0);
+                    mobileInfo.append("div")
+                        .style("font-size", "0.75rem")
+                        .style("margin", "0.2rem 0")
+                        .style("display", "flex")
+                        .style("align-items", "center")
+                        .style("gap", "0.3rem")
+                        .html(`
+                            <div style="width: 12px; height: 12px; background: ${colors[spend.category]}; border-radius: 2px; flex-shrink: 0;"></div>
+                            <span>${spend.category}: ${percentage}%</span>
+                        `);
+                }
             });
         }
 
-        function createComparisonChart() {
+        // MODIFIED: createComparisonChart now accepts candidateData
+        function createComparisonChart(candidateData) {
             const container = d3.select("#comparison-chart");
+            container.html(""); // Clear previous chart if re-rendering
             container.append("div")
                 .attr("class", "chart-title")
                 .text("💰 Fundraising vs Spending Comparison");
 
             const margin = {top: 20, right: 80, bottom: 60, left: 80};
-            const width = 450 - margin.left - margin.right;
+            
+            // Adjust width calculation based on container, fallback to a default
+            const containerWidth = container.node() ? container.node().getBoundingClientRect().width : 500;
+            const width = Math.max(containerWidth - margin.left - margin.right, 250); // Ensure a min width
             const height = 300 - margin.top - margin.bottom;
+
 
             const svg = container.append("svg")
                 .attr("width", width + margin.left + margin.right)
@@ -1214,37 +1015,40 @@
 
             const candidates = Object.keys(candidateData);
             
+            const xMax = d3.max(candidates, name => candidateData[name].totalRaised);
+            const yMax = d3.max(candidates, name => candidateData[name].totalSpent);
+
             const x = d3.scaleLinear()
                 .range([0, width])
-                .domain([0, d3.max(candidates, name => candidateData[name].totalRaised)]);
+                .domain([0, xMax === 0 ? 1 : xMax]);
+
 
             const y = d3.scaleLinear()
                 .range([height, 0])
-                .domain([0, d3.max(candidates, name => candidateData[name].totalSpent)]);
+                .domain([0, yMax === 0 ? 1 : yMax]);
 
-            // Add circles for each candidate
+
             g.selectAll(".candidate-point")
                 .data(candidates)
                 .enter().append("circle")
                 .attr("class", "candidate-point")
                 .attr("cx", d => x(candidateData[d].totalRaised))
                 .attr("cy", d => y(candidateData[d].totalSpent))
-                .attr("r", d => Math.sqrt(candidateData[d].polling) * 2)
+                .attr("r", d => Math.sqrt(Math.max(0, candidateData[d].polling)) * 2) // Ensure polling is not negative for sqrt
                 .attr("fill", d => candidateData[d].issues ? "#ff6b6b" : "#ffd700")
                 .attr("opacity", 0.7)
-                .on("mouseover", (event, d) => {
-                    const data = candidateData[d];
+                .on("mouseover", (event, d_name) => { // d_name is the candidate name
+                    const data = candidateData[d_name];
                     showTooltip(event, `
-                        <strong>${d}</strong><br>
+                        <strong>${d_name}</strong><br>
                         Raised: ${formatCurrency(data.totalRaised)}<br>
                         Spent: ${formatCurrency(data.totalSpent)}<br>
-                        Efficiency: ${(data.totalSpent > 0 ? (data.polling / (data.totalSpent / 1000000)).toFixed(1) : 0)} pts/$M<br>
+                        Efficiency: ${(data.totalSpent > 0 ? (data.polling / (data.totalSpent / 1000000)) : 0).toFixed(1)} pts/$M<br>
                         Polling: ${data.polling}%
                     `);
                 })
                 .on("mouseout", hideTooltip);
 
-            // Add candidate labels
             g.selectAll(".candidate-label")
                 .data(candidates)
                 .enter().append("text")
@@ -1255,7 +1059,6 @@
                 .style("fill", "white")
                 .text(d => d.split(' ')[1] || d.split(' ')[0]);
 
-            // Axes
             g.append("g")
                 .attr("transform", `translate(0,${height})`)
                 .call(d3.axisBottom(x).tickFormat(d => formatCurrency(d)))
@@ -1269,10 +1072,9 @@
                 .style("fill", "white")
                 .style("font-size", "10px");
 
-            // Axis labels
             g.append("text")
                 .attr("transform", "rotate(-90)")
-                .attr("y", 0 - margin.left)
+                .attr("y", 0 - margin.left + 15) // Adjusted for better positioning
                 .attr("x", 0 - (height / 2))
                 .attr("dy", "1em")
                 .style("text-anchor", "middle")
@@ -1281,7 +1083,7 @@
                 .text("Total Spent");
 
             g.append("text")
-                .attr("transform", `translate(${width / 2}, ${height + margin.bottom - 10})`)
+                .attr("transform", `translate(${width / 2}, ${height + margin.bottom - 15})`) // Adjusted
                 .style("text-anchor", "middle")
                 .style("fill", "#ffd700")
                 .style("font-size", "12px")
@@ -1290,14 +1092,17 @@
             g.selectAll(".domain, .tick line").attr("stroke", "rgba(255,255,255,0.3)");
         }
 
-        function createEfficiencyChart() {
+        // MODIFIED: createEfficiencyChart now accepts candidateData
+        function createEfficiencyChart(candidateData) {
             const container = d3.select("#efficiency-chart");
+            container.html(""); // Clear previous chart if re-rendering
             container.append("div")
                 .attr("class", "chart-title")
                 .text("📊 Campaign Efficiency (Polling / Spending)");
 
             const margin = {top: 20, right: 40, bottom: 100, left: 60};
-            const width = 450 - margin.left - margin.right;
+            const containerWidth = container.node() ? container.node().getBoundingClientRect().width : 500;
+            const width = Math.max(containerWidth - margin.left - margin.right, 250); // Ensure a min width
             const height = 300 - margin.top - margin.bottom;
 
             const svg = container.append("svg")
@@ -1318,6 +1123,8 @@
                     issues: data.issues
                 };
             }).sort((a, b) => b.efficiency - a.efficiency);
+            
+            const yMax = d3.max(efficiencyData, d => d.efficiency);
 
             const x = d3.scaleBand()
                 .range([0, width])
@@ -1326,9 +1133,8 @@
 
             const y = d3.scaleLinear()
                 .range([height, 0])
-                .domain([0, d3.max(efficiencyData, d => d.efficiency)]);
+                .domain([0, yMax === 0 ? 1 : yMax]);
 
-            // Bars
             g.selectAll(".efficiency-bar")
                 .data(efficiencyData)
                 .enter().append("rect")
@@ -1339,17 +1145,16 @@
                 .attr("height", d => height - y(d.efficiency))
                 .attr("fill", d => d.issues ? "#ff6b6b" : "#48d1cc")
                 .attr("rx", 3)
-                .on("mouseover", (event, d) => {
+                .on("mouseover", (event, d_eff) => { // d_eff is the efficiency datum
                     showTooltip(event, `
-                        <strong>${d.name}</strong><br>
-                        Efficiency: ${d.efficiency.toFixed(1)} polling pts per $1M<br>
-                        Current Polling: ${d.polling}%<br>
-                        ${d.issues ? `Issue: ${d.issues}` : 'No compliance issues'}
+                        <strong>${d_eff.name}</strong><br>
+                        Efficiency: ${d_eff.efficiency.toFixed(1)} polling pts per $1M<br>
+                        Current Polling: ${d_eff.polling}%<br>
+                        ${d_eff.issues ? `Issue: ${d_eff.issues}` : 'No compliance issues'}
                     `);
                 })
                 .on("mouseout", hideTooltip);
 
-            // Value labels
             g.selectAll(".efficiency-label")
                 .data(efficiencyData)
                 .enter().append("text")
@@ -1361,7 +1166,6 @@
                 .style("font-weight", "bold")
                 .text(d => d.efficiency.toFixed(1));
 
-            // Axes
             g.append("g")
                 .attr("transform", `translate(0,${height})`)
                 .call(d3.axisBottom(x))
@@ -1381,10 +1185,9 @@
 
             g.selectAll(".domain, .tick line").attr("stroke", "rgba(255,255,255,0.3)");
 
-            // Y-axis label
             g.append("text")
                 .attr("transform", "rotate(-90)")
-                .attr("y", 0 - margin.left)
+                .attr("y", 0 - margin.left + 15) // Adjusted
                 .attr("x", 0 - (height / 2))
                 .attr("dy", "1em")
                 .style("text-anchor", "middle")
@@ -1393,20 +1196,48 @@
                 .text("Polling Points per $1M Spent");
         }
 
-        // Initialize dashboard
-        function init() {
-            // Create candidate widgets
-            Object.keys(candidateData).forEach(candidate => {
-                createCandidateWidget(candidate, candidateData[candidate]);
-            });
+        // Main function to fetch data and initialize the dashboard
+        async function fetchDataAndInitialize() {
+            try {
+                // Path to your JSON file. Ensure this file is in the same directory or provide the correct path.
+                const response = await fetch('candidate_data.json'); 
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const loadedCandidateData = await response.json();
 
-            // Create overview charts
-            setTimeout(() => createComparisonChart(), 500);
-            setTimeout(() => createEfficiencyChart(), 1000);
+                // Data is loaded, now initialize the dashboard components
+                initializeDashboard(loadedCandidateData);
+
+            } catch (error) {
+                console.error("Could not load candidate data:", error);
+                // Display an error message on the page
+                const container = d3.select(".container");
+                container.insert("div", ":first-child") // Insert at the beginning of the container
+                    .attr("class", "alert-box")
+                    .style("border-color", "red")
+                    .html(`<div class="alert-title" style="color: red;">Error Loading Data</div>
+                           <p>Could not load candidate financial data. Please try again later or check the console for more details.</p>`);
+            }
         }
 
-        // Start the visualization
-        init();
+        function initializeDashboard(candidateData) {
+            // Clear existing candidate widgets if any (for re-initialization if needed)
+            d3.select("#candidates-container").html("");
+
+            // Create candidate widgets
+            Object.keys(candidateData).forEach(candidateName => {
+                createCandidateWidget(candidateName, candidateData[candidateName]);
+            });
+
+            // Create overview charts, passing the loaded data
+            // The timeouts can remain if they are for visual staggering of chart rendering
+            setTimeout(() => createComparisonChart(candidateData), 100); // Reduced timeout as data is ready
+            setTimeout(() => createEfficiencyChart(candidateData), 200);  // Reduced timeout
+        }
+
+        // Start the process
+        fetchDataAndInitialize();
     </script>
 </body>
 </html>
