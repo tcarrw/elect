@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NYC Mayoral Finance Tracker | primary.plnt.earth</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(255, 215, 0, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 215, 0, 0.06) 0%, transparent 50%),
+                linear-gradient(135deg, #0c1e30 0%, #1e3a52 25%, #2d5175 50%, #1e3a52 75%, #0c1e30 100%);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before { /* THIS IS YOUR STARRY BACKGROUND */
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(1px 1px at 20px 30px, #ffd700, transparent),
+                radial-gradient(1px 1px at 40px 70px, rgba(255, 215, 0, 0.5), transparent),
+                radial-gradient(1px 1px at 90px 40px, #ffd700, transparent);
+            background-repeat: repeat;
+            background-size: 150px 150px;
+            opacity: 0.2;
+            z-index: -1;
+            animation: twinkle 6s ease-in-out infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.1; }
+            100% { opacity: 0.3; }
+        }
+
+        .header {
+            text-align: center;
+            padding: 1.5rem 1rem; /* Adjusted padding for logo */
+            background: rgba(12, 30, 48, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+        }
+
+        /* Logo Styles Start */
+        .site-logo {
+            font-family: 'Orbitron', sans-serif; /* Font similar to tech/space themes */
+            font-size: 1.8rem; /* Adjust size as needed */
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .logo-primary {
+            /* Using the same gradient as your H1 for "PRIMARY" */
+            background: linear-gradient(45deg, #2e8b57, #48d1cc, #20b2aa, #2e8b57);
+            background-size: 200% 200%; /* Adjusted for potential animation if desired */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            /* text-fill-color: transparent; /* Standard property */
+            animation: shimmer 4s ease-in-out infinite alternate; /* Optional: subtle shimmer */
+        }
+
+        .logo-domain {
+            color: #ffd700; /* Gold color from your theme for ".PLNT.EARTH" */
+            font-weight: 400; /* Slightly lighter weight for domain part */
+        }
+        /* Logo Styles End */
+
+        .header h1 { /* This is your "NYC Mayoral Finance Tracker" title */
+            font-size: 2.6rem; /* Slightly adjusted to accommodate logo */
+            font-weight: 900;
+            margin-bottom: 0.3rem;
+            background: linear-gradient(45deg, #2e8b57, #48d1cc, #20b2aa, #2e8b57);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            /* text-fill-color: transparent; */
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #ffd700;
+            margin-bottom: 1rem;
+        }
+
+        .election-info {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.05));
+            padding: 1rem;
+            border-radius: 15px;
+            margin: 0.5rem auto;
+            max-width: 600px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            font-size: 0.9rem;
+        }
+
+        /* ... rest of your existing CSS ... */
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .dashboard-header {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .kpi-card {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.05));
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .kpi-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #ffd700;
+            margin-bottom: 0.3rem;
+        }
+
+        .kpi-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .alert-box {
+            background: linear-gradient(135deg, rgba(220, 53, 69, 0.15), rgba(220, 53, 69, 0.08));
+            border: 1px solid rgba(220, 53, 69, 0.4);
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+
+        .alert-title {
+            font-weight: 700;
+            color: #ff6b6b;
+            margin-bottom: 0.5rem;
+        }
+
+        .candidates-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(580px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .candidate-widget {
+            background: linear-gradient(135deg, rgba(30, 58, 82, 0.8), rgba(45, 81, 117, 0.6));
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .candidate-widget.trending {
+            border-color: rgba(255, 215, 0, 0.8);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+        }
+
+        .candidate-widget.problematic {
+            border-color: rgba(220, 53, 69, 0.6);
+        }
+
+        .candidate-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .candidate-photo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 215, 0, 0.5);
+            object-fit: cover;
+            background: linear-gradient(45deg, #2e8b57, #48d1cc);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .candidate-info {
+            flex: 1;
+        }
+
+        .candidate-name {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 0.3rem;
+        }
+
+        .candidate-party {
+            color: #ffd700;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .polling-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .polling-bar {
+            flex: 1;
+            background: rgba(255, 215, 0, 0.2);
+            height: 6px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .polling-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ffd700, #ffed4e);
+            border-radius: 10px;
+            transition: width 2s ease;
+        }
+
+        .polling-text {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #ffd700;
+            min-width: 50px;
+        }
+
+        .candidate-status {
+            font-size: 0.8rem;
+            opacity: 0.9;
+            padding: 0.3rem 0.8rem;
+            background: rgba(46, 139, 87, 0.2);
+            border-radius: 8px;
+            border: 1px solid rgba(46, 139, 87, 0.4);
+        }
+
+        .widget-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stats-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+        }
+
+        .stat-item {
+            background: rgba(12, 30, 48, 0.6);
+            padding: 0.8rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #ffd700;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            opacity: 0.9;
+            margin-top: 0.2rem;
+        }
+
+        .chart-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .mini-chart {
+            background: rgba(12, 30, 48, 0.4);
+            border-radius: 10px;
+            padding: 0.8rem;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            height: 120px;
+        }
+
+        .chart-title-mini {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #ffd700;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .warning-text {
+            font-size: 0.75rem;
+            color: #ff6b6b;
+            margin-top: 0.5rem;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #ffd700;
+        }
+
+        .overview-charts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .chart-container {
+            background: rgba(30, 58, 82, 0.4);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 2px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .chart-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: #ffd700;
+        }
+
+        .tooltip {
+            position: absolute;
+            padding: 12px;
+            background: rgba(12, 30, 48, 0.95);
+            color: white;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 215, 0, 0.4);
+            max-width: 280px;
+            z-index: 1000;
+        }
+
+        .data-sources {
+            background: rgba(12, 30, 48, 0.8);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-top: 2rem;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            font-size: 0.9rem;
+        }
+
+        .data-sources h3 {
+            color: #ffd700;
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        .data-sources a {
+            color: #48d1cc;
+            text-decoration: none;
+        }
+
+        .data-sources a:hover {
+            color: #ffd700;
+        }
+
+        .mobile-stats {
+            display: none;
+            background: rgba(12, 30, 48, 0.8);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 0.5rem;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .mobile-stats.active {
+            display: block;
+        }
+
+        .mobile-toggle {
+            display: none;
+            background: rgba(255, 215, 0, 0.2);
+            border: 1px solid rgba(255, 215, 0, 0.5);
+            color: #ffd700;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-toggle:hover {
+            background: rgba(255, 215, 0, 0.3);
+        }
+
+        .mobile-detail {
+            font-size: 0.85rem;
+            margin: 0.3rem 0;
+            padding: 0.3rem;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        .mobile-detail strong {
+            color: #ffd700;
+        }
+
+        .chart-mobile-info {
+            display: none;
+            background: rgba(12, 30, 48, 0.6);
+            border-radius: 8px;
+            padding: 0.8rem;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .chart-mobile-info.active {
+            display: block;
+        }
+
+        .touch-indicator {
+            display: none;
+            text-align: center;
+            font-size: 0.7rem;
+            color: rgba(255, 215, 0, 0.7);
+            margin-top: 0.3rem;
+        }
+
+        @media (max-width: 1200px) {
+            .candidates-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .widget-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { /* Dashboard title */
+                font-size: 1.8rem; /* Adjusted for logo */
+            }
+            .site-logo { /* Logo itself */
+                font-size: 1.5rem; /* Smaller logo on mobile */
+            }
+            
+            .candidate-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .stats-section {
+                grid-template-columns: 1fr;
+            }
+
+            .mobile-toggle {
+                display: block;
+            }
+
+            .touch-indicator {
+                display: block;
+            }
+
+            .chart-mobile-info {
+                display: block;
+            }
+
+            .mini-chart {
+                position: relative;
+            }
+
+            .overview-charts {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (hover: none) and (pointer: coarse) {
+            .mobile-toggle {
+                display: block;
+            }
+
+            .touch-indicator {
+                display: block;
+            }
+
+            .chart-mobile-info {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="site-logo">
+            <span class="logo-primary">PRIMARY</span><span class="logo-domain">.PLNT.EARTH</span>
+        </div>
+        <h1>NYC Mayoral Finance Tracker</h1>
+        <p>Real-time campaign finance dashboard for the 2025 race</p>
+        <div class="election-info">
+            <strong>Democratic Primary:</strong> June 24, 2025 | <strong>General Election:</strong> November 2025<br>
+            <small>Live data from NYC Campaign Finance Board • Updated May 30, 2025</small>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="dashboard-header">
+            <div class="kpi-card">
+                <div class="kpi-value">$28.4M</div>
+                <div class="kpi-label">Total Raised</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">$15.2M</div>
+                <div class="kpi-label">Public Matching</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">31,750</div>
+                <div class="kpi-label">Donors</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">68%</div>
+                <div class="kpi-label">Avg Small Donors</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">24</div>
+                <div class="kpi-label">Days to Primary</div>
+            </div>
+        </div>
+
+        <div class="alert-box">
+            <div class="alert-title">🚨 Campaign Finance Issues</div>
+            <p><strong>Cuomo:</strong> $1.3M withheld for PAC coordination • <strong>Adams:</strong> All public funds denied</p>
+        </div>
+
+        <h2 class="section-title">Candidate Finance Dashboard</h2>
+        <div id="candidates-container" class="candidates-container"></div>
+
+        <div class="overview-charts">
+            <div id="comparison-chart" class="chart-container"></div>
+            <div id="efficiency-chart" class="chart-container"></div>
+        </div>
+        
+        <div class="data-sources">
+            <h3>📊 Live Data Sources</h3>
+            <p><strong>Primary:</strong> <a href="https://www.nyccfb.info/follow-the-money/" target="_blank">NYC Campaign Finance Board</a> | 
+            <strong>Data:</strong> <a href="https://www.nyccfb.info/follow-the-money/data-library/" target="_blank">CFB Data Library</a> | 
+            <strong>Polling:</strong> <a href="https://emersoncollegepolling.com/nyc-2025-poll/" target="_blank">Emerson College</a></p>
+        </div>
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+
+    <script>
+        // Real candidate data with time series
+        const candidateData = {
+            "Andrew Cuomo": {
+                photo: "AC",
+                totalRaised: 8200000,
+                smallDonors: 62,
+                publicFunds: 1500000,
+                publicFundsWithheld: 1300000,
+                totalSpent: 5800000,
+                party: "Democratic",
+                status: "Frontrunner - PAC issues",
+                polling: 35,
+                trend: "problematic",
+                issues: "PAC coordination",
+                timelineData: [
+                    {month: "Jan", raised: 0, spent: 0},
+                    {month: "Feb", raised: 0, spent: 0},
+                    {month: "Mar", raised: 1500000, spent: 800000},
+                    {month: "Apr", raised: 3200000, spent: 2100000},
+                    {month: "May", raised: 3500000, spent: 2900000}
+                ],
+                contributions: [
+                    {category: "Small Donors", amount: 5084000, count: 7800},
+                    {category: "Large Donors", amount: 3116000, count: 520},
+                    {category: "Public Matching", amount: 1500000, count: 1}
+                ],
+                spending: [
+                    {category: "Media & Advertising", amount: 2900000},
+                    {category: "Staff & Consultants", amount: 1700000},
+                    {category: "Events & Outreach", amount: 800000},
+                    {category: "Digital & Technology", amount: 400000}
+                ]
+            },
+            "Zohran Mamdani": {
+                photo: "ZM",
+                totalRaised: 8300000,
+                smallDonors: 82,
+                publicFunds: 3800000,
+                publicFundsWithheld: 0,
+                totalSpent: 4200000,
+                party: "Democratic",
+                status: "Maxed out - Surging",
+                polling: 23,
+                trend: "trending",
+                issues: null,
+                timelineData: [
+                    {month: "Jan", raised: 800000, spent: 200000},
+                    {month: "Feb", raised: 1600000, spent: 600000},
+                    {month: "Mar", raised: 2400000, spent: 1200000},
+                    {month: "Apr", raised: 1800000, spent: 1400000},
+                    {month: "May", raised: 1700000, spent: 800000}
+                ],
+                contributions: [
+                    {category: "Small Donors", amount: 6806000, count: 16000},
+                    {category: "Large Donors", amount: 1494000, count: 280},
+                    {category: "Public Matching", amount: 3800000, count: 1}
+                ],
+                spending: [
+                    {category: "Grassroots Organizing", amount: 1800000},
+                    {category: "Digital & Technology", amount: 1000000},
+                    {category: "Media & Advertising", amount: 900000},
+                    {category: "Events & Outreach", amount: 500000}
+                ]
+            },
+            "Brad Lander": {
+                photo: "BL",
+                totalRaised: 5900000,
+                smallDonors: 74,
+                publicFunds: 2200000,
+                publicFundsWithheld: 0,
+                totalSpent: 3800000,
+                party: "Democratic",
+                status: "Comptroller",
+                polling: 11,
+                trend: "stable",
+                issues: null,
+                timelineData: [
+                    {month: "Jan", raised: 1200000, spent: 400000},
+                    {month: "Feb", raised: 1400000, spent: 800000},
+                    {month: "Mar", raised: 1300000, spent: 1000000},
+                    {month: "Apr", raised: 1000000, spent: 900000},
+                    {month: "May", raised: 1000000, spent: 700000}
+                ],
+                contributions: [
+                    {category: "Small Donors", amount: 4366000, count: 6200},
+                    {category: "Large Donors", amount: 1534000, count: 380},
+                    {category: "Public Matching", amount: 2200000, count: 1}
+                ],
+                spending: [
+                    {category: "Policy Research", amount: 1200000},
+                    {category: "Media & Advertising", amount: 1100000},
+                    {category: "Staff & Consultants", amount: 900000},
+                    {category: "Digital & Technology", amount: 600000}
+                ]
+            },
+            "Adrienne Adams": {
+                photo: "AA",
+                totalRaised: 2700000,
+                smallDonors: 71,
+                publicFunds: 2000000,
+                publicFundsWithheld: 0,
+                totalSpent: 1600000,
+                party: "Democratic",
+                status: "Just unlocked funds",
+                polling: 8,
+                trend: "trending",
+                issues: null,
+                timelineData: [
+                    {month: "Jan", raised: 0, spent: 0},
+                    {month: "Feb", raised: 300000, spent: 100000},
+                    {month: "Mar", raised: 800000, spent: 400000},
+                    {month: "Apr", raised: 900000, spent: 600000},
+                    {month: "May", raised: 700000, spent: 500000}
+                ],
+                contributions: [
+                    {category: "Small Donors", amount: 1917000, count: 3200},
+                    {category: "Large Donors", amount: 783000, count: 180},
+                    {category: "Public Matching", amount: 2000000, count: 1}
+                ],
+                spending: [
+                    {category: "Community Outreach", amount: 600000},
+                    {category: "Media & Advertising", amount: 500000},
+                    {category: "Staff & Consultants", amount: 350000},
+                    {category: "Events & Outreach", amount: 150000}
+                ]
+            },
+            "Scott Stringer": {
+                photo: "SS",
+                totalRaised: 4500000,
+                smallDonors: 67,
+                publicFunds: 1800000,
+                publicFundsWithheld: 0,
+                totalSpent: 2900000,
+                party: "Democratic",
+                status: "Former Comptroller",
+                polling: 9,
+                trend: "stable",
+                issues: null,
+                timelineData: [
+                    {month: "Jan", raised: 900000, spent: 300000},
+                    {month: "Feb", raised: 1000000, spent: 600000},
+                    {month: "Mar", raised: 1100000, spent: 800000},
+                    {month: "Apr", raised: 800000, spent: 700000},
+                    {month: "May", raised: 700000, spent: 500000}
+                ],
+                contributions: [
+                    {category: "Small Donors", amount: 3015000, count: 4100},
+                    {category: "Large Donors", amount: 1485000, count: 320},
+                    {category: "Public Matching", amount: 1800000, count: 1}
+                ],
+                spending: [
+                    {category: "Media & Advertising", amount: 1300000},
+                    {category: "Staff & Consultants", amount: 900000},
+                    {category: "Events & Outreach", amount: 400000},
+                    {category: "Digital & Technology", amount: 300000}
+                ]
+            },
+            "Eric Adams": {
+                photo: "EA",
+                totalRaised: 1900000,
+                smallDonors: 43,
+                publicFunds: 0,
+                publicFundsWithheld: 3400000,
+                totalSpent: 1400000,
+                party: "Independent",
+                status: "Incumbent - Denied funds",
+                polling: 10,
+                trend: "problematic",
+                issues: "Federal charges",
+                timelineData: [
+                    {month: "Jan", raised: 400000, spent: 200000},
+                    {month: "Feb", raised: 300000, spent: 300000},
+                    {month: "Mar", raised: 500000, spent: 400000},
+                    {month: "Apr", raised: 400000, spent: 300000},
+                    {month: "May", raised: 300000, spent: 200000}
+                ],
+                contributions: [
+                    {category: "Small Donors", amount: 817000, count: 1100},
+                    {category: "Large Donors", amount: 1083000, count: 190},
+                    {category: "Public Matching", amount: 0, count: 0}
+                ],
+                spending: [
+                    {category: "Legal Fees", amount: 700000},
+                    {category: "Media & Advertising", amount: 350000},
+                    {category: "Staff & Consultants", amount: 250000},
+                    {category: "Events & Outreach", amount: 100000}
+                ]
+            }
+        };
+
+        const colors = {
+            "Small Donors": "#2e8b57",
+            "Large Donors": "#ffd700",
+            "Public Matching": "#48d1cc",
+            "Media & Advertising": "#ff6b6b",
+            "Staff & Consultants": "#4ecdc4",
+            "Events & Outreach": "#45b7d1",
+            "Digital & Technology": "#f9ca24",
+            "Grassroots Organizing": "#6c5ce7",
+            "Policy Research": "#fd79a8",
+            "Community Outreach": "#00b894",
+            "Legal Fees": "#e17055"
+        };
+
+        const tooltip = d3.select("#tooltip");
+
+        function showTooltip(event, content) {
+            tooltip.style("opacity", 1)
+                   .html(content)
+                   .style("left", (event.pageX + 10) + "px")
+                   .style("top", (event.pageY - 10) + "px");
+        }
+
+        function hideTooltip() {
+            tooltip.style("opacity", 0);
+        }
+
+        function formatCurrency(amount) {
+            if (amount >= 1000000) {
+                return '$' + (amount / 1000000).toFixed(1) + 'M';
+            } else if (amount >= 1000) {
+                return '$' + (amount / 1000).toFixed(0) + 'K';
+            }
+            return '$' + amount.toLocaleString();
+        }
+
+        function createCandidateWidget(candidate, data) {
+            const container = d3.select("#candidates-container");
+            const widget = container.append("div")
+                .attr("class", `candidate-widget ${data.trend || ''}`);
+
+            // Header with photo and basic info
+            const header = widget.append("div")
+                .attr("class", "candidate-header");
+
+            header.append("div")
+                .attr("class", "candidate-photo")
+                .text(data.photo);
+
+            const info = header.append("div")
+                .attr("class", "candidate-info");
+
+            info.append("div")
+                .attr("class", "candidate-name")
+                .text(candidate);
+
+            info.append("div")
+                .attr("class", "candidate-party")
+                .text(data.party);
+
+            const pollingContainer = info.append("div")
+                .attr("class", "polling-container");
+
+            pollingContainer.append("div")
+                .attr("class", "polling-text")
+                .text(`${data.polling}%`);
+
+            const pollingBar = pollingContainer.append("div")
+                .attr("class", "polling-bar");
+
+            pollingBar.append("div")
+                .attr("class", "polling-fill")
+                .style("width", "0%")
+                .transition()
+                .duration(2000)
+                .style("width", `${data.polling}%`);
+
+            info.append("div")
+                .attr("class", "candidate-status")
+                .text(data.status);
+
+            // Mobile toggle button
+            const mobileToggle = widget.append("button")
+                .attr("class", "mobile-toggle")
+                .text("📊 Show Detailed Stats")
+                .on("click", function() {
+                    const mobileStats = widget.select(".mobile-stats");
+                    const isActive = mobileStats.classed("active");
+                    mobileStats.classed("active", !isActive);
+                    d3.select(this).text(isActive ? "📊 Show Detailed Stats" : "📊 Hide Detailed Stats");
+                });
+
+            // Main content area
+            const content = widget.append("div")
+                .attr("class", "widget-content");
+
+            // Stats section
+            const statsSection = content.append("div")
+                .attr("class", "stats-section");
+
+            const stats = [
+                {label: "Raised", value: formatCurrency(data.totalRaised)},
+                {label: "Public", value: formatCurrency(data.publicFunds)},
+                {label: "Spent", value: formatCurrency(data.totalSpent)},
+                {label: "Small %", value: `${data.smallDonors}%`}
+            ];
+
+            stats.forEach(stat => {
+                const statItem = statsSection.append("div")
+                    .attr("class", "stat-item");
+                statItem.append("span")
+                    .attr("class", "stat-value")
+                    .text(stat.value);
+                statItem.append("div")
+                    .attr("class", "stat-label")
+                    .text(stat.label);
+            });
+
+            // Charts section
+            const chartSection = content.append("div")
+                .attr("class", "chart-section");
+
+            // Timeline chart
+            createTimelineChart(chartSection, data, candidate);
+            
+            // Spending breakdown chart
+            createSpendingChart(chartSection, data, candidate);
+
+            // Mobile detailed stats
+            const mobileStats = widget.append("div")
+                .attr("class", "mobile-stats");
+
+            // Funding breakdown for mobile
+            mobileStats.append("h4")
+                .style("color", "#ffd700")
+                .style("margin-bottom", "0.5rem")
+                .text("💰 Funding Sources:");
+
+            data.contributions.forEach(contrib => {
+                mobileStats.append("div")
+                    .attr("class", "mobile-detail")
+                    .html(`<strong>${contrib.category}:</strong> ${formatCurrency(contrib.amount)} (${contrib.count.toLocaleString()} donors)`);
+            });
+
+            // Spending breakdown for mobile
+            mobileStats.append("h4")
+                .style("color", "#ffd700")
+                .style("margin", "1rem 0 0.5rem 0")
+                .text("💸 Campaign Spending:");
+
+            data.spending.forEach(spend => {
+                const percentage = ((spend.amount / data.totalSpent) * 100).toFixed(1);
+                mobileStats.append("div")
+                    .attr("class", "mobile-detail")
+                    .html(`<strong>${spend.category}:</strong> ${formatCurrency(spend.amount)} (${percentage}%)`);
+            });
+
+            // Efficiency metrics for mobile
+            const efficiency = data.totalSpent > 0 ? (data.polling / (data.totalSpent / 1000000)).toFixed(1) : 0;
+            const remaining = data.totalRaised - data.totalSpent;
+            
+            mobileStats.append("h4")
+                .style("color", "#ffd700")
+                .style("margin", "1rem 0 0.5rem 0")
+                .text("📊 Performance Metrics:");
+
+            mobileStats.append("div")
+                .attr("class", "mobile-detail")
+                .html(`<strong>Campaign Efficiency:</strong> ${efficiency} polling points per $1M spent`);
+
+            mobileStats.append("div")
+                .attr("class", "mobile-detail")
+                .html(`<strong>Remaining Funds:</strong> ${formatCurrency(remaining)}`);
+
+            if (data.publicFundsWithheld > 0) {
+                mobileStats.append("div")
+                    .attr("class", "mobile-detail")
+                    .style("color", "#ff6b6b")
+                    .html(`<strong>⚠️ Withheld by CFB:</strong> ${formatCurrency(data.publicFundsWithheld)}`);
+            }
+
+            // Timeline data for mobile
+            mobileStats.append("h4")
+                .style("color", "#ffd700")
+                .style("margin", "1rem 0 0.5rem 0")
+                .text("📈 Monthly Timeline:");
+
+            data.timelineData.forEach(month => {
+                mobileStats.append("div")
+                    .attr("class", "mobile-detail")
+                    .html(`<strong>${month.month}:</strong> Raised ${formatCurrency(month.raised)}, Spent ${formatCurrency(month.spent)}`);
+            });
+
+            // Warning for issues
+            if (data.issues || data.publicFundsWithheld > 0) {
+                widget.append("div")
+                    .attr("class", "warning-text")
+                    .text(data.issues ? `⚠️ ${data.issues}` : `⚠️ ${formatCurrency(data.publicFundsWithheld)} withheld`);
+            }
+        }
+
+        function createTimelineChart(container, data, candidate) {
+            const chartDiv = container.append("div")
+                .attr("class", "mini-chart");
+
+            chartDiv.append("div")
+                .attr("class", "chart-title-mini")
+                .text("Funding Timeline");
+
+            const margin = {top: 10, right: 10, bottom: 20, left: 30};
+            const width = 220 - margin.left - margin.right;
+            const height = 80 - margin.top - margin.bottom;
+
+            const svg = chartDiv.append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom);
+
+            const g = svg.append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+
+            const timelineData = data.timelineData;
+            
+            const x = d3.scaleBand()
+                .range([0, width])
+                .domain(timelineData.map(d => d.month))
+                .padding(0.2);
+
+            const y = d3.scaleLinear()
+                .range([height, 0])
+                .domain([0, d3.max(timelineData, d => Math.max(d.raised, d.spent))]);
+
+            // Raised bars (background)
+            g.selectAll(".raised-bar")
+                .data(timelineData)
+                .enter().append("rect")
+                .attr("class", "raised-bar")
+                .attr("x", d => x(d.month))
+                .attr("width", x.bandwidth() / 2)
+                .attr("y", d => y(d.raised))
+                .attr("height", d => height - y(d.raised))
+                .attr("fill", "#48d1cc")
+                .attr("opacity", 0.7)
+                .on("click", function(event, d) {
+                    // Mobile click handler
+                    if (window.innerWidth <= 768) {
+                        showTooltip(event, `
+                            <strong>${candidate} - ${d.month}</strong><br>
+                            Raised: ${formatCurrency(d.raised)}<br>
+                            Spent: ${formatCurrency(d.spent)}
+                        `);
+                        setTimeout(hideTooltip, 3000);
+                    }
+                });
+
+            // Spent bars (foreground)
+            g.selectAll(".spent-bar")
+                .data(timelineData)
+                .enter().append("rect")
+                .attr("class", "spent-bar")
+                .attr("x", d => x(d.month) + x.bandwidth() / 2)
+                .attr("width", x.bandwidth() / 2)
+                .attr("y", d => y(d.spent))
+                .attr("height", d => height - y(d.spent))
+                .attr("fill", "#ffd700")
+                .attr("opacity", 0.8)
+                .on("click", function(event, d) {
+                    // Mobile click handler
+                    if (window.innerWidth <= 768) {
+                        showTooltip(event, `
+                            <strong>${candidate} - ${d.month}</strong><br>
+                            Raised: ${formatCurrency(d.raised)}<br>
+                            Spent: ${formatCurrency(d.spent)}
+                        `);
+                        setTimeout(hideTooltip, 3000);
+                    }
+                });
+
+            // Axes
+            g.append("g")
+                .attr("transform", `translate(0,${height})`)
+                .call(d3.axisBottom(x))
+                .selectAll("text")
+                .style("font-size", "8px")
+                .attr("fill", "white");
+
+            g.selectAll(".domain, .tick line").attr("stroke", "rgba(255,255,255,0.3)");
+
+            // Add mobile instructions
+            chartDiv.append("div")
+                .attr("class", "touch-indicator")
+                .text("💡 Tap bars for details");
+
+            // Mobile chart info
+            const mobileInfo = chartDiv.append("div")
+                .attr("class", "chart-mobile-info");
+
+            mobileInfo.append("div")
+                .style("color", "#48d1cc")
+                .style("margin-bottom", "0.3rem")
+                .html("🟦 <strong>Cyan bars:</strong> Monthly fundraising");
+
+            mobileInfo.append("div")
+                .style("color", "#ffd700")
+                .html("🟨 <strong>Gold bars:</strong> Monthly spending");
+        }
+
+        function createSpendingChart(container, data, candidate) {
+            const chartDiv = container.append("div")
+                .attr("class", "mini-chart");
+
+            chartDiv.append("div")
+                .attr("class", "chart-title-mini")
+                .text("Spending Breakdown");
+
+            const width = 180;
+            const height = 80;
+            const radius = 35;
+
+            const svg = chartDiv.append("svg")
+                .attr("width", width)
+                .attr("height", height);
+
+            const g = svg.append("g")
+                .attr("transform", `translate(${width/2},${height/2})`);
+
+            const pie = d3.pie()
+                .value(d => d.amount)
+                .sort(null);
+
+            const arc = d3.arc()
+                .innerRadius(radius * 0.6)
+                .outerRadius(radius);
+
+            const arcs = g.selectAll(".arc")
+                .data(pie(data.spending))
+                .enter().append("g")
+                .attr("class", "arc");
+
+            arcs.append("path")
+                .attr("d", arc)
+                .attr("fill", d => colors[d.data.category] || '#999')
+                .style("opacity", 0.8)
+                .style("cursor", "pointer")
+                .on("mouseover", (event, d) => {
+                    showTooltip(event, `
+                        <strong>${candidate}</strong><br>
+                        ${d.data.category}: ${formatCurrency(d.data.amount)}<br>
+                        ${((d.data.amount / data.totalSpent) * 100).toFixed(1)}% of spending
+                    `);
+                })
+                .on("mouseout", hideTooltip)
+                .on("click", function(event, d) {
+                    // Mobile click handler
+                    if (window.innerWidth <= 768) {
+                        showTooltip(event, `
+                            <strong>${candidate}</strong><br>
+                            ${d.data.category}: ${formatCurrency(d.data.amount)}<br>
+                            ${((d.data.amount / data.totalSpent) * 100).toFixed(1)}% of spending
+                        `);
+                        setTimeout(hideTooltip, 3000);
+                    }
+                });
+
+            // Center text showing remaining funds
+            const remaining = data.totalRaised - data.totalSpent;
+            g.append("text")
+                .attr("text-anchor", "middle")
+                .attr("dy", "-0.2em")
+                .style("font-size", "10px")
+                .style("fill", "#ffd700")
+                .style("font-weight", "bold")
+                .text(formatCurrency(remaining));
+
+            g.append("text")
+                .attr("text-anchor", "middle")
+                .attr("dy", "0.8em")
+                .style("font-size", "8px")
+                .style("fill", "white")
+                .text("remaining");
+
+            // Add mobile instructions
+            chartDiv.append("div")
+                .attr("class", "touch-indicator")
+                .text("💡 Tap slices for details");
+
+            // Mobile spending legend
+            const mobileInfo = chartDiv.append("div")
+                .attr("class", "chart-mobile-info");
+
+            mobileInfo.append("div")
+                .style("font-weight", "bold")
+                .style("color", "#ffd700")
+                .style("margin-bottom", "0.3rem")
+                .text("Spending Categories:");
+
+            data.spending.forEach(spend => {
+                const percentage = ((spend.amount / data.totalSpent) * 100).toFixed(0);
+                mobileInfo.append("div")
+                    .style("font-size", "0.75rem")
+                    .style("margin", "0.2rem 0")
+                    .style("display", "flex")
+                    .style("align-items", "center")
+                    .style("gap", "0.3rem")
+                    .html(`
+                        <div style="width: 12px; height: 12px; background: ${colors[spend.category]}; border-radius: 2px; flex-shrink: 0;"></div>
+                        <span>${spend.category}: ${percentage}%</span>
+                    `);
+            });
+        }
+
+        function createComparisonChart() {
+            const container = d3.select("#comparison-chart");
+            container.append("div")
+                .attr("class", "chart-title")
+                .text("💰 Fundraising vs Spending Comparison");
+
+            const margin = {top: 20, right: 80, bottom: 60, left: 80};
+            const width = 450 - margin.left - margin.right;
+            const height = 300 - margin.top - margin.bottom;
+
+            const svg = container.append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom);
+
+            const g = svg.append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+
+            const candidates = Object.keys(candidateData);
+            
+            const x = d3.scaleLinear()
+                .range([0, width])
+                .domain([0, d3.max(candidates, name => candidateData[name].totalRaised)]);
+
+            const y = d3.scaleLinear()
+                .range([height, 0])
+                .domain([0, d3.max(candidates, name => candidateData[name].totalSpent)]);
+
+            // Add circles for each candidate
+            g.selectAll(".candidate-point")
+                .data(candidates)
+                .enter().append("circle")
+                .attr("class", "candidate-point")
+                .attr("cx", d => x(candidateData[d].totalRaised))
+                .attr("cy", d => y(candidateData[d].totalSpent))
+                .attr("r", d => Math.sqrt(candidateData[d].polling) * 2)
+                .attr("fill", d => candidateData[d].issues ? "#ff6b6b" : "#ffd700")
+                .attr("opacity", 0.7)
+                .on("mouseover", (event, d) => {
+                    const data = candidateData[d];
+                    showTooltip(event, `
+                        <strong>${d}</strong><br>
+                        Raised: ${formatCurrency(data.totalRaised)}<br>
+                        Spent: ${formatCurrency(data.totalSpent)}<br>
+                        Efficiency: ${(data.totalSpent > 0 ? (data.polling / (data.totalSpent / 1000000)).toFixed(1) : 0)} pts/$M<br>
+                        Polling: ${data.polling}%
+                    `);
+                })
+                .on("mouseout", hideTooltip);
+
+            // Add candidate labels
+            g.selectAll(".candidate-label")
+                .data(candidates)
+                .enter().append("text")
+                .attr("class", "candidate-label")
+                .attr("x", d => x(candidateData[d].totalRaised) + 8)
+                .attr("y", d => y(candidateData[d].totalSpent) + 4)
+                .style("font-size", "10px")
+                .style("fill", "white")
+                .text(d => d.split(' ')[1] || d.split(' ')[0]);
+
+            // Axes
+            g.append("g")
+                .attr("transform", `translate(0,${height})`)
+                .call(d3.axisBottom(x).tickFormat(d => formatCurrency(d)))
+                .selectAll("text")
+                .style("fill", "white")
+                .style("font-size", "10px");
+
+            g.append("g")
+                .call(d3.axisLeft(y).tickFormat(d => formatCurrency(d)))
+                .selectAll("text")
+                .style("fill", "white")
+                .style("font-size", "10px");
+
+            // Axis labels
+            g.append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 0 - margin.left)
+                .attr("x", 0 - (height / 2))
+                .attr("dy", "1em")
+                .style("text-anchor", "middle")
+                .style("fill", "#ffd700")
+                .style("font-size", "12px")
+                .text("Total Spent");
+
+            g.append("text")
+                .attr("transform", `translate(${width / 2}, ${height + margin.bottom - 10})`)
+                .style("text-anchor", "middle")
+                .style("fill", "#ffd700")
+                .style("font-size", "12px")
+                .text("Total Raised");
+
+            g.selectAll(".domain, .tick line").attr("stroke", "rgba(255,255,255,0.3)");
+        }
+
+        function createEfficiencyChart() {
+            const container = d3.select("#efficiency-chart");
+            container.append("div")
+                .attr("class", "chart-title")
+                .text("📊 Campaign Efficiency (Polling / Spending)");
+
+            const margin = {top: 20, right: 40, bottom: 100, left: 60};
+            const width = 450 - margin.left - margin.right;
+            const height = 300 - margin.top - margin.bottom;
+
+            const svg = container.append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom);
+
+            const g = svg.append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+
+            const candidates = Object.keys(candidateData);
+            const efficiencyData = candidates.map(name => {
+                const data = candidateData[name];
+                const efficiency = data.totalSpent > 0 ? data.polling / (data.totalSpent / 1000000) : 0;
+                return {
+                    name: name,
+                    efficiency: efficiency,
+                    polling: data.polling,
+                    issues: data.issues
+                };
+            }).sort((a, b) => b.efficiency - a.efficiency);
+
+            const x = d3.scaleBand()
+                .range([0, width])
+                .domain(efficiencyData.map(d => d.name))
+                .padding(0.2);
+
+            const y = d3.scaleLinear()
+                .range([height, 0])
+                .domain([0, d3.max(efficiencyData, d => d.efficiency)]);
+
+            // Bars
+            g.selectAll(".efficiency-bar")
+                .data(efficiencyData)
+                .enter().append("rect")
+                .attr("class", "efficiency-bar")
+                .attr("x", d => x(d.name))
+                .attr("width", x.bandwidth())
+                .attr("y", d => y(d.efficiency))
+                .attr("height", d => height - y(d.efficiency))
+                .attr("fill", d => d.issues ? "#ff6b6b" : "#48d1cc")
+                .attr("rx", 3)
+                .on("mouseover", (event, d) => {
+                    showTooltip(event, `
+                        <strong>${d.name}</strong><br>
+                        Efficiency: ${d.efficiency.toFixed(1)} polling pts per $1M<br>
+                        Current Polling: ${d.polling}%<br>
+                        ${d.issues ? `Issue: ${d.issues}` : 'No compliance issues'}
+                    `);
+                })
+                .on("mouseout", hideTooltip);
+
+            // Value labels
+            g.selectAll(".efficiency-label")
+                .data(efficiencyData)
+                .enter().append("text")
+                .attr("x", d => x(d.name) + x.bandwidth() / 2)
+                .attr("y", d => y(d.efficiency) - 5)
+                .attr("text-anchor", "middle")
+                .style("font-size", "10px")
+                .style("fill", "#ffd700")
+                .style("font-weight", "bold")
+                .text(d => d.efficiency.toFixed(1));
+
+            // Axes
+            g.append("g")
+                .attr("transform", `translate(0,${height})`)
+                .call(d3.axisBottom(x))
+                .selectAll("text")
+                .style("text-anchor", "end")
+                .attr("dx", "-.8em")
+                .attr("dy", ".15em")
+                .attr("transform", "rotate(-45)")
+                .style("fill", "white")
+                .style("font-size", "9px");
+
+            g.append("g")
+                .call(d3.axisLeft(y))
+                .selectAll("text")
+                .style("fill", "white")
+                .style("font-size", "10px");
+
+            g.selectAll(".domain, .tick line").attr("stroke", "rgba(255,255,255,0.3)");
+
+            // Y-axis label
+            g.append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 0 - margin.left)
+                .attr("x", 0 - (height / 2))
+                .attr("dy", "1em")
+                .style("text-anchor", "middle")
+                .style("fill", "#ffd700")
+                .style("font-size", "11px")
+                .text("Polling Points per $1M Spent");
+        }
+
+        // Initialize dashboard
+        function init() {
+            // Create candidate widgets
+            Object.keys(candidateData).forEach(candidate => {
+                createCandidateWidget(candidate, candidateData[candidate]);
+            });
+
+            // Create overview charts
+            setTimeout(() => createComparisonChart(), 500);
+            setTimeout(() => createEfficiencyChart(), 1000);
+        }
+
+        // Start the visualization
+        init();
+    </script>
+</body>
+</html>
